@@ -1,0 +1,29 @@
+---
+- hosts: local
+
+  tasks:
+    - name: Create dir for .ssh
+      ansible.builtin.file:
+        dest: "/Applications/Firefox.app/Contents/Resources/distribution/"
+        state: directory
+        owner: ivan
+        group: staff
+        mode: '0755'
+    - name: Disable Firefox auto-update notifications
+      ansible.builtin.copy:
+        dest: "/Applications/Firefox.app/Contents/Resources/distribution/policies.json"
+        content: |
+          {
+            "policies": {
+              "DisableAppUpdate": true
+            }
+          }
+        mode: '0644'
+    - name: Grant longer session for sudo
+      ansible.builtin.copy:
+        dest: "/etc/sudoers.d/default"
+        content: |
+          Defaults timestamp_timeout=240
+        owner: root
+        group: wheel
+        mode: '0644'
